@@ -27,6 +27,11 @@ Construccion   :no_entry_sign: :construction:  :muscle:
   - [Materialize](http://materializecss.com/)
 
 
+## Diagramas
+
+Comportamiento del CEHDUN:
+
+![Image of Yaktocat](https://github.com/merakive/cehdun/blob/master/diagrams/cehdun.png)
 
 ## ¿Cómo puedo contribuir? 
 Solo debes leer el archivo `contributing.md`, que encontraras en [este enlace](https://github.com/merakive/cehdun/blob/master/.github/CONTRIBUTING.md)
