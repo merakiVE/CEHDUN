@@ -4,15 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { routing, appRoutingProviders } from './app.routing';
 
-
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-
+import { ApiComponent } from './api/api.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    ApiComponent
   ],
   imports: [
     BrowserModule,
