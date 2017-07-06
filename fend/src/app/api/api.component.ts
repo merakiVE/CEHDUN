@@ -12,7 +12,7 @@ export class ApiComponent{
 
 	constructor(){
 		this.title = 'API';
-		this.user = new User("", "");
+		this.user = new User("", "", "");
 	}
 
 	ngOnInit(){
@@ -21,6 +21,6 @@ export class ApiComponent{
 
 	checkUser(){
 		console.log(this.user);
-		this.user = new User("", "");
+		this.user = new User("", "", "");
 	}
 }

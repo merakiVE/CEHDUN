@@ -42,6 +42,32 @@
     </div>
 
     <div class="row">
+      <div class="col s12 m12 l4 push-l4">
+        <i class="material-icons prefix">dns</i>
+        <label>Tipo de base de datos </label>
+        <select class="browser-default" name="typeBD" #typeBD="ngModel" [(ngModel)]="user.typeBD" required>
+          <option value="" disabled selected>Seleccione una opcion</option>
+          <option value="Postgresql">Postgresql</option>
+          <option value="Mysql">Mysql</option>
+          <option value="Oracle">Oracle</option>
+          <option value="ArangoDB">ArangoDB</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row"> 
+      <div class="center col s12 m12 l4 push-l4" *ngIf="typeBD.touched && !typeBD.valid">
+        <div class="card-panel">
+          <p><i class="medium material-icons waves-effect waves-light">report_problem</i>
+            Debe seleccionar el tipo de base de datos
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    
+    <div class="row">
       <div class="center col s12 m12 l4 push-l4"> 
         <button type="submit" class="btn-floating black" [disabled]="!formUser.form.valid">
           <i class="material-icons">play_for_work</i>
@@ -49,6 +75,8 @@
         Iniciar
       </div>
     </div>
+
+    
 
     <br><br>
 
