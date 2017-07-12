@@ -1,4 +1,4 @@
-:boom: # Demiourgo 
+ # :boom: Demiourgo 
 
 Demiurgo is a generator of template for CEHDUN .
 
