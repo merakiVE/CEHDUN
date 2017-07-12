@@ -1,6 +1,6 @@
 import { FendPage } from './app.po';
 
-describe('fend App', () => {
+describe('thea App', () => {
   let page: FendPage;
 
   beforeEach(() => {
