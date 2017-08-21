@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/goadesign/goa"
 	"github.com/vpino/merakiVE/CEHDUN/core/app"
+	"github.com/vpino/merakiVE/CEHDUN/core/types"
+    "github.com/vpino/merakiVE/CEHDUN/common"
 )
 
 // SyndesiController implements the syndesi resource.
@@ -18,15 +20,23 @@ func NewSyndesiController(service *goa.Service) *SyndesiController {
 // Connect runs the connect action.
 func (c *SyndesiController) Connect(ctx *app.ConnectSyndesiContext) error {
 	
-	user := ctx.Payload.Name
-
+    db := types.DataBase{
+    	Host: ctx.Payload.Host,
+    	User: ctx.Payload.User, 
+		Password: ctx.Payload.Password,
+		Type: ctx.Payload.Type,
+		Name: ctx.Payload.Name,
+    }
+	
 	var message string
 
-	if user == "Victor" {
-		message = "Success :)"
-	} else {
-		message = "Error mi pana :("
-	}
+	con := common.Connect(db)
+
+    if con == nil {
+        message = "Error mi pana :)"
+    }
+
+	message = "Success :)"
 	
 	res := &app.SyndesiMedia{Message: message}
 	return ctx.OK(res)

@@ -29,11 +29,13 @@ var _ = Resource("syndesi", func() {
 })
 
 var Syndesi = Type("Syndesi", func() {
-	Attribute("name", String, "Name of user")
-	Attribute("password", String, "Password of the user")
-	Attribute("typeDB", String, "Type of database")
+	Attribute("host", String, "Host of database")
+	Attribute("user", String, "Name of user")
+	Attribute("password", String, "Password the user")
+	Attribute("type", String, "Type database")
+	Attribute("name", String, "name database")
 
-	Required("name", "password", "typeDB")
+	Required("host", "user", "password", "type", "name")
 })
 
 var SyndesiMedia = MediaType("application/json", func() {

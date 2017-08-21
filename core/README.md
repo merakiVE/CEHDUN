@@ -5,10 +5,11 @@
 :construction: construction
 
 
-### Install goagen:
+### Install goagen AND gorm:
 
 ```
-go get -u github.com/goadesign/goa/...
+$ go get -u github.com/goadesign/goa/...
+$ go get -u github.com/jinzhu/gorm
 ```
 
 ### Generate the Demiurgo
@@ -52,7 +53,7 @@ $ go build
 And test of resource:
 
 ```
-$ ./cehdun-cli connect syndesi --payload '{"name": "Victor", "password": "11", "typeDB": "postgresql"}' --dump
+$ ./cehdun-cli connect syndesi --payload '{"host": "localhost", "user": "victor", "password": "", "type": "postgresql", "name": "CEHDUN"}' --dump
 ```
 
 ### Response success:
@@ -72,7 +73,7 @@ $ ./cehdun-cli connect syndesi --payload '{"name": "Victor", "password": "11", "
 Execute:
 
 ```
-$ ./cehdun-cli connect syndesi --payload '{"name": "Hugo", "password": "11", "typeDB": "postgresql"}' --dump
+$ ./cehdun-cli connect syndesi --payload '{"host": "localhost", "user": "", "password": "", "type": "postgresql", "name": "CEHDUN"}' --dump
 ```
 
 Response:

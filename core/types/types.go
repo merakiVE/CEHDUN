@@ -1,7 +1,6 @@
 package types
 
 import (
-	arangoDB "github.com/hostelix/aranGO"
 	"time"
 )
 
@@ -76,4 +75,12 @@ type Resource struct {
 type Template struct {
     Api Api `json:"api"`
     Resources []Resource `json:"resources"`
+}
+
+type DataBase struct {
+    Host string `json:"host"`
+    User string `json:"user"`
+    Password string `json:"password"`
+    Type string `json:"type"`
+    Name string `json:"name"`
 }
