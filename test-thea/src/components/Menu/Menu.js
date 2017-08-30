@@ -11,7 +11,7 @@ import MenuItem from 'material-ui/MenuItem'
 import SvgIcon from 'material-ui/SvgIcon';
 import Divider from 'material-ui/Divider';
 import Person from 'material-ui/svg-icons/social/person';
-import Apps from 'material-ui/svg-icons/navigation/apps.js';
+import Create from 'material-ui/svg-icons/content/create.js';
 import {ListItem} from 'material-ui/List';
 
 const HomeIcon = (props) => (
@@ -40,9 +40,9 @@ class Menu extends React.Component {
 
                     <Link to={'/projects'}>
                         <MenuItem
-                            primaryText={'Generar Api'}
+                            primaryText={'Diagramador'}
                             onTouchTap={this.props.onTouchTap}
-                            leftIcon={<Apps />}
+                            leftIcon={<Create />}
                         />
                     </Link>
 
