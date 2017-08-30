@@ -62,7 +62,7 @@ const (
 
 func NewDiagram() DiagramBpmnIO {
 	doc := etree.NewDocument()
-	return DiagramBpmnIO{documentXML: doc, isLoad: false}
+	return DiagramBpmnIO{documentXML: doc}
 }
 
 /*
@@ -74,6 +74,7 @@ type DiagramBpmnIO struct {
 	sequences   []*etree.Element
 }
 
+/* Funcion que carga el diagrama XML en forma de pathfile */
 func (this DiagramBpmnIO) ReadFromFile(filename string) {
 	if err := this.documentXML.ReadFromFile(filename); err != nil {
 		panic(err)
@@ -81,6 +82,7 @@ func (this DiagramBpmnIO) ReadFromFile(filename string) {
 	this.loadSequence()
 }
 
+/* Funcion que carga el diagrama XML en forma de string */
 func (this DiagramBpmnIO) ReadFromString(data string) {
 	if err := this.documentXML.ReadFromString(data); err != nil {
 		panic(err)
@@ -88,6 +90,7 @@ func (this DiagramBpmnIO) ReadFromString(data string) {
 	this.loadSequence()
 }
 
+ /* Funcion que carga el diagrama XML en forma de byte */
 func (this DiagramBpmnIO) ReadFromBytes(bytes []byte) {
 	if err := this.documentXML.ReadFromBytes(bytes); err != nil {
 		panic(err)
@@ -95,6 +98,7 @@ func (this DiagramBpmnIO) ReadFromBytes(bytes []byte) {
 	this.loadSequence()
 }
 
+/* Funcion que carga la sequencia en un slice de la estructura */
 func (this *DiagramBpmnIO) loadSequence() {
 	//Se obtienen todas las sequencias del proceso
 	this.sequences = this.getProcessElement().SelectElements(TAG_SEQUENCE_FLOW)
