@@ -60,17 +60,9 @@ const (
 
 /* Funcion que crea la estructura de datos para el diagrama bpmn */
 
-func NewDiagram(pathFilename string) DiagramBpmnIO {
+func NewDiagram() DiagramBpmnIO {
 	doc := etree.NewDocument()
-
-	if err := doc.ReadFromFile(pathFilename); err != nil {
-		panic(err)
-	}
-
-	//Se obtienen todas las sequencias del proceso
-	sq := doc.SelectElement(TAG_ROOT).SelectElement(TAG_PROCESS).SelectElements(TAG_SEQUENCE_FLOW)
-
-	return DiagramBpmnIO{documentXML: doc, sequences: sq}
+	return DiagramBpmnIO{documentXML: doc, isLoad: false}
 }
 
 /*
@@ -80,6 +72,32 @@ func NewDiagram(pathFilename string) DiagramBpmnIO {
 type DiagramBpmnIO struct {
 	documentXML *etree.Document
 	sequences   []*etree.Element
+}
+
+func (this DiagramBpmnIO) ReadFromFile(filename string) {
+	if err := this.documentXML.ReadFromFile(filename); err != nil {
+		panic(err)
+	}
+	this.loadSequence()
+}
+
+func (this DiagramBpmnIO) ReadFromString(data string) {
+	if err := this.documentXML.ReadFromString(data); err != nil {
+		panic(err)
+	}
+	this.loadSequence()
+}
+
+func (this DiagramBpmnIO) ReadFromBytes(bytes []byte) {
+	if err := this.documentXML.ReadFromBytes(bytes); err != nil {
+		panic(err)
+	}
+	this.loadSequence()
+}
+
+func (this *DiagramBpmnIO) loadSequence() {
+	//Se obtienen todas las sequencias del proceso
+	this.sequences = this.getProcessElement().SelectElements(TAG_SEQUENCE_FLOW)
 }
 
 /* Verifica si un elemento es una estructura gateway */
