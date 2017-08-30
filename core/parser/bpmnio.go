@@ -58,42 +58,6 @@ const (
 	ATTR_NAME       = "name"
 )
 
-/* Verifica si un elemento es una estructura gateway */
-func isGateway(elem *etree.Element) (bool) {
-	return strings.HasSuffix(elem.Tag, "Gateway")
-}
-
-/* Verifica si un elemento es un evento */
-func isEvent(elem *etree.Element) (bool) {
-	return strings.HasSuffix(elem.Tag, "Event")
-}
-
-/* Verifica si un elemento es una actividad */
-func isActivity(elem *etree.Element) (bool) {
-	activities := []string{"subProcess", "transaction", "task"}
-	for _, v := range activities {
-		if v == elem.Tag {
-			return true
-		}
-	}
-	return false
-}
-
-/* Obtiene el tipo de elemento */
-func getTypeElement(elem *etree.Element) (string) {
-	if isGateway(elem) {
-		return TYPE_GATEWAY
-	}
-	if isEvent(elem) {
-		return TYPE_EVENT
-	}
-	if isActivity(elem) {
-		return TYPE_ACTIVITY
-	}
-
-	return TYPE_NONE
-}
-
 /* Funcion que crea la estructura de datos para el diagrama bpmn */
 
 func NewDiagram(pathFilename string) DiagramBpmnIO {
@@ -116,6 +80,42 @@ func NewDiagram(pathFilename string) DiagramBpmnIO {
 type DiagramBpmnIO struct {
 	documentXML *etree.Document
 	sequences   []*etree.Element
+}
+
+/* Verifica si un elemento es una estructura gateway */
+func (this DiagramBpmnIO) isGateway(elem *etree.Element) (bool) {
+	return strings.HasSuffix(elem.Tag, "Gateway")
+}
+
+/* Verifica si un elemento es un evento */
+func (this DiagramBpmnIO) isEvent(elem *etree.Element) (bool) {
+	return strings.HasSuffix(elem.Tag, "Event")
+}
+
+/* Verifica si un elemento es una actividad */
+func (this DiagramBpmnIO) isActivity(elem *etree.Element) (bool) {
+	activities := []string{"subProcess", "transaction", "task"}
+	for _, v := range activities {
+		if v == elem.Tag {
+			return true
+		}
+	}
+	return false
+}
+
+/* Obtiene el tipo de elemento */
+func (this DiagramBpmnIO) GetTypeElement(elem *etree.Element) (string) {
+	if this.isGateway(elem) {
+		return TYPE_GATEWAY
+	}
+	if this.isEvent(elem) {
+		return TYPE_EVENT
+	}
+	if this.isActivity(elem) {
+		return TYPE_ACTIVITY
+	}
+
+	return TYPE_NONE
 }
 
 /*
