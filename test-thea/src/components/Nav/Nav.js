@@ -6,14 +6,15 @@ import './Nav.css'
 
 //Assets
 import Menu from '../Menu/Menu'
-import Modal from '../Login/Login'
 
 //Material-UI
 import Appbar from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
-import Person from 'material-ui/svg-icons/social/person';
 
-
+const styles = {
+	colorNav:{
+	    background:'#00E676',
+    }
+}
 
 class Nav extends Component{
 
@@ -23,11 +24,11 @@ class Nav extends Component{
 	}
 
 	handleToggleMenu = () => this.setState({menu: !this.state.menu});
-	handleToggleModal = () => this.setState({modal: !this.state.modal});
 
 	render(){
 		return (
 			<Appbar
+                style={styles.colorNav}
 				title={<span className={'title-nav'}>CVDI</span>}
 				onLeftIconButtonTouchTap={this.handleToggleMenu}>
 
@@ -37,11 +38,6 @@ class Nav extends Component{
 			    	onRequestChange={this.handleToggleMenu}
 			    />
 
-			    <Modal
-			    	open={this.state.modal}
-			    	onTouchTapCancel={this.handleToggleModal}
-			    	onRequestClose={this.handleToggleModal}
-			    />
 			</Appbar>
 
 		);

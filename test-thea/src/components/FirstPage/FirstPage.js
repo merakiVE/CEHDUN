@@ -4,9 +4,7 @@ import React, { Component } from 'react';
 //Styles
 import './FirstPage.css';
 
-//Images
-
-class LandingPage extends Component {
+class FirstPage extends Component {
 
 	render(){
 
@@ -22,4 +20,4 @@ class LandingPage extends Component {
 		);
 	}
 }
-export default LandingPage;
+export default FirstPage;
