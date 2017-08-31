@@ -1,0 +1,35 @@
+.RegisterUser-content{
+    padding: 30px;
+}
+
+.RegisterUser-title{
+    font-size: 38px;
+}
+
+.RegisterUser-comment{
+    text-align: left;
+}
+
+.RegisterUser-paper-form{
+    width: 100%;
+    height: 100%;
+    padding-bottom: 40px;
+}
+
+.RegisterUser-button{
+    padding-top: 5%;
+    padding-bottom: 5%;
+}
+
+.RegisterUser-Form{
+    width: 80% !important;
+    margin-left: 5% !important;
+}
+
+.Input-One{
+    margin-left: 8% !important;
+}
+
+.Input-Two{
+    margin-left: 8% !important;
+}
