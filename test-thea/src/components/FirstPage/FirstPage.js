@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 import './FirstPage.css';
 
 class FirstPage extends Component {
-
 	render(){
 
 		return(

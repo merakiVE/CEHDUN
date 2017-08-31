@@ -38,9 +38,9 @@ class Menu extends React.Component {
                         />
                     </Link>
 
-                    <Link to={'/projects'}>
+                    <Link to={'/'}>
                         <MenuItem
-                            primaryText={'Diagramador'}
+                            primaryText={'Diagram'}
                             onTouchTap={this.props.onTouchTap}
                             leftIcon={<Create />}
                         />
@@ -48,9 +48,9 @@ class Menu extends React.Component {
 
                     <Divider />
 
-                    <Link to={'/login'}>
+                    <Link to={'/Register'}>
                         <ListItem
-                            primaryText={'Iniciar Sesion'}
+                            primaryText={'Register User'}
                             onTouchTap={this.props.onTouchTap}
                             leftIcon={<Person />}
                         />
