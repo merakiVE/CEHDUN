@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.16.2",
+    "material-ui": "^0.18.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-router-dom": "^4.1.1",
-    "react-tap-event-plugin": "^2.0.1",
-    "material-ui": "^0.18.0"
+    "react-tap-event-plugin": "^2.0.1"
   },
   "devDependencies": {
     "autoprefixer": "6.7.2",
@@ -42,13 +43,13 @@
     "postcss-loader": "1.2.2",
     "promise": "7.1.1",
     "react-dev-utils": "^0.5.2",
+    "react-scripts": "0.9.5",
     "style-loader": "0.13.1",
     "url-loader": "0.5.7",
     "webpack": "1.14.0",
     "webpack-dev-server": "1.16.2",
     "webpack-manifest-plugin": "1.1.0",
-    "whatwg-fetch": "2.0.2",
-    "react-scripts": "0.9.5"
+    "whatwg-fetch": "2.0.2"
   },
   "scripts": {
     "start": "node scripts/start.js",
