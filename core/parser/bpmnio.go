@@ -199,6 +199,15 @@ func (this DiagramBpmnIO) GetDataInputElement(elem *etree.Element) ([]*etree.Ele
 }
 
 /*
+	Esta funcion obtiene el atributo nombre del elemento
+
+	Retorna un string con el nombre
+ */
+func (this DiagramBpmnIO) GetAttribute(elem *etree.Element, key string) (string) {
+	return elem.SelectAttrValue(key, "unknown")
+}
+
+/*
 	Esta funcion obtiene todoo el flujo del proceso, secuencial en un slice de elementos
 
 	Retorna slice de puntero element
