@@ -62,7 +62,7 @@ const (
 
 func NewDiagram() DiagramBpmnIO {
 	doc := etree.NewDocument()
-	return DiagramBpmnIO{documentXML: doc}
+	return DiagramBpmnIO{documentXML: doc, sequences: make([]*etree.Element, 0)}
 }
 
 /*
@@ -75,7 +75,7 @@ type DiagramBpmnIO struct {
 }
 
 /* Funcion que carga el diagrama XML en forma de pathfile */
-func (this DiagramBpmnIO) ReadFromFile(filename string) {
+func (this *DiagramBpmnIO) ReadFromFile(filename string) {
 	if err := this.documentXML.ReadFromFile(filename); err != nil {
 		panic(err)
 	}
@@ -83,15 +83,15 @@ func (this DiagramBpmnIO) ReadFromFile(filename string) {
 }
 
 /* Funcion que carga el diagrama XML en forma de string */
-func (this DiagramBpmnIO) ReadFromString(data string) {
+func (this *DiagramBpmnIO) ReadFromString(data string) {
 	if err := this.documentXML.ReadFromString(data); err != nil {
 		panic(err)
 	}
 	this.loadSequence()
 }
 
- /* Funcion que carga el diagrama XML en forma de byte */
-func (this DiagramBpmnIO) ReadFromBytes(bytes []byte) {
+/* Funcion que carga el diagrama XML en forma de byte */
+func (this *DiagramBpmnIO) ReadFromBytes(bytes []byte) {
 	if err := this.documentXML.ReadFromBytes(bytes); err != nil {
 		panic(err)
 	}
