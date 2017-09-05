@@ -3,6 +3,7 @@ package parser
 import (
 	"strings"
 	"github.com/beevik/etree"
+	"fmt"
 )
 
 /*
@@ -43,6 +44,7 @@ const (
 	TAG_OUTGOING                = "bpmn:outgoing"
 	TAG_INCOMING                = "bpmn:incoming"
 	TAG_SEQUENCE_FLOW           = "bpmn:sequenceFlow"
+	TAG_MESSAGE_FLOW            = "bpmn:messageFlow"
 	TAG_TASK                    = "bpmn:task"
 	TAG_EVENT_BASED_GATEWAY     = "bpmn:eventBasedGateway"
 	TAG_EVENT_EXCLUSIVE_GATEWAY = "bpmn:exclusiveGateway"
@@ -62,7 +64,7 @@ const (
 
 func NewDiagram() DiagramBpmnIO {
 	doc := etree.NewDocument()
-	return DiagramBpmnIO{documentXML: doc, sequences: make([]*etree.Element, 0)}
+	return DiagramBpmnIO{documentXML: doc, sequences: make([]*etree.Element, 0), flows: make([]*etree.Element, 0)}
 }
 
 /*
@@ -72,6 +74,7 @@ func NewDiagram() DiagramBpmnIO {
 type DiagramBpmnIO struct {
 	documentXML *etree.Document
 	sequences   []*etree.Element
+	flows       []*etree.Element
 }
 
 /* Funcion que carga el diagrama XML en forma de pathfile */
@@ -101,7 +104,17 @@ func (this *DiagramBpmnIO) ReadFromBytes(bytes []byte) {
 /* Funcion que carga la sequencia en un slice de la estructura */
 func (this *DiagramBpmnIO) loadSequence() {
 	//Se obtienen todas las sequencias del proceso
-	this.sequences = this.getProcessElement().SelectElements(TAG_SEQUENCE_FLOW)
+	//this.sequences = this.getProcessElement().SelectElements(TAG_SEQUENCE_FLOW)
+	this.loadFlows()
+}
+
+/* Funcion que carga todos los flows en un slice de la estructura */
+func (this *DiagramBpmnIO) loadFlows() {
+
+	fmt.Println(this.getRootElement().SelectElements(TAG_MESSAGE_FLOW))
+
+	copy(this.flows, this.getRootElement().SelectElements(TAG_SEQUENCE_FLOW))
+	copy(this.flows, this.getRootElement().SelectElements(TAG_MESSAGE_FLOW))
 }
 
 /* Verifica si un elemento es una estructura gateway */
@@ -171,6 +184,16 @@ func (this DiagramBpmnIO) getElementByID(id string) (*etree.Element) {
 }
 
 /*
+	Esta funcion es usada para buscar cualquier elemento dentro de la etiquta TAG_ROOT
+	que coincida con el atributo proporcionado
+
+	Retorna un puntero Element
+ */
+func (this DiagramBpmnIO) getElementByAttr(atrib string, val string) (*etree.Element) {
+	return this.getRootElement().FindElement(`//[@` + atrib + `='` + val + `']`)
+}
+
+/*
 	Esta funcion es usada para verificar si un elemento posee datos de entrada
 
 	Retorna booleano
@@ -236,6 +259,16 @@ func (this DiagramBpmnIO) GetSuccessionProcess() []*etree.Element {
 		}
 	}
 	return s
+}
+
+/*
+	Esta funcion obtiene todoo carriles del diagrama
+
+	Retorna slice de puntero element
+ */
+func (this DiagramBpmnIO) GetLanes() []*etree.Element {
+	//return this.getProcessElement()
+	return nil
 }
 
 /*
