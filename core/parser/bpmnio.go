@@ -28,6 +28,8 @@ import (
 */
 
 const (
+	EMPTY         = "unknown"
+
 	TYPE_GATEWAY  = "gateway"
 	TYPE_EVENT    = "event"
 	TYPE_TASK     = "task"
@@ -224,12 +226,31 @@ func (this DiagramBpmnIO) GetDataInputElement(elem *etree.Element) ([]*etree.Ele
 }
 
 /*
+	Esta funcion obtiene todos dentro de un lane especifico
+
+	Retorna slice de puntero element
+ */
+func (this DiagramBpmnIO) GetElementsInLane(lane_elem *etree.Element) ([]*etree.Element) {
+	elems_lane := make([]*etree.Element, 0)
+	nodes_ref := lane_elem.SelectElements(TAG_FLOW_NODE_REF)
+
+	for _, node := range nodes_ref {
+		elem := this.getElementByID(node.Text())
+
+		if elem != nil {
+			elems_lane = append(elems_lane, elem)
+		}
+	}
+	return elems_lane
+}
+
+/*
 	Esta funcion obtiene el atributo nombre del elemento
 
 	Retorna un string con el nombre
  */
 func (this DiagramBpmnIO) GetAttribute(elem *etree.Element, key string) (string) {
-	return elem.SelectAttrValue(key, "unknown")
+	return elem.SelectAttrValue(key, EMPTY)
 }
 
 /*
