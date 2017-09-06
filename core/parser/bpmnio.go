@@ -45,6 +45,9 @@ const (
 	TAG_SEQUENCE_FLOW           = "bpmn:sequenceFlow"
 	TAG_MESSAGE_FLOW            = "bpmn:messageFlow"
 	TAG_TASK                    = "bpmn:task"
+	TAG_LANE_SET                = "bpmn:laneSet"
+	TAG_LANE                    = "bpmn:lane"
+	TAG_FLOW_NODE_REF           = "bpmn:flowNodeRef"
 	TAG_EVENT_BASED_GATEWAY     = "bpmn:eventBasedGateway"
 	TAG_EVENT_EXCLUSIVE_GATEWAY = "bpmn:exclusiveGateway"
 	TAG_EVENT_PARALLEL_GATEWAY  = "bpmn:parallelGateway"
@@ -63,7 +66,7 @@ const (
 
 func NewDiagram() DiagramBpmnIO {
 	doc := etree.NewDocument()
-	return DiagramBpmnIO{documentXML: doc, sequences: make([]*etree.Element, 0), flows: make([]*etree.Element, 0)}
+	return DiagramBpmnIO{documentXML: doc, flows: make([]*etree.Element, 0)}
 }
 
 /*
@@ -72,7 +75,6 @@ func NewDiagram() DiagramBpmnIO {
 
 type DiagramBpmnIO struct {
 	documentXML *etree.Document
-	sequences   []*etree.Element
 	flows       []*etree.Element
 }
 
@@ -81,7 +83,7 @@ func (this *DiagramBpmnIO) ReadFromFile(filename string) {
 	if err := this.documentXML.ReadFromFile(filename); err != nil {
 		panic(err)
 	}
-	this.loadSequence()
+	this.findAndLoadFlows()
 }
 
 /* Funcion que carga el diagrama XML en forma de string */
@@ -89,7 +91,7 @@ func (this *DiagramBpmnIO) ReadFromString(data string) {
 	if err := this.documentXML.ReadFromString(data); err != nil {
 		panic(err)
 	}
-	this.loadSequence()
+	this.findAndLoadFlows()
 }
 
 /* Funcion que carga el diagrama XML en forma de byte */
@@ -97,25 +99,24 @@ func (this *DiagramBpmnIO) ReadFromBytes(bytes []byte) {
 	if err := this.documentXML.ReadFromBytes(bytes); err != nil {
 		panic(err)
 	}
-	this.loadSequence()
-}
-
-/* Funcion que carga la sequencia en un slice de la estructura */
-func (this *DiagramBpmnIO) loadSequence() {
-	//Se obtienen todas las sequencias del proceso
-	//this.sequences = this.getProcessElement().SelectElements(TAG_SEQUENCE_FLOW)
-	this.loadFlows()
+	this.findAndLoadFlows()
 }
 
 /* Funcion que carga todos los flows en un slice de la estructura */
-func (this *DiagramBpmnIO) loadFlows() {
-	//s := make([]*etree.Element,0)
+func (this *DiagramBpmnIO) findAndLoadFlows() {
+	//Buscar todos los elementos padres que tengan una etiqueta TAG_MESSAGE_FLOW y TAG_SEQUENCE_FLOW como hijos
+	parent_messages := this.getRootElement().FindElements(`[` + TAG_MESSAGE_FLOW + `]`)
+	parent_sequences := this.getRootElement().FindElements(`[` + TAG_SEQUENCE_FLOW + `]`)
 
-	//for _, eprocess := range this.getProcess() {
-	//s = append(s, eprocess.FindElements(`[`+TAG_SEQUENCE_FLOW+`]`)...)
-	//}
-	this.flows = append(this.flows, this.getRootElement().FindElements(`[`+TAG_SEQUENCE_FLOW+`]`)...)
-	this.flows = append(this.flows, this.getRootElement().FindElements(`[`+TAG_MESSAGE_FLOW+`]`)...)
+	//Anadimos todos los TAG_SEQUENCE_FLOW en el diagrama al atributo this.flows
+	for _, mesg := range parent_messages {
+		this.flows = append(this.flows, mesg.SelectElements(TAG_MESSAGE_FLOW)...)
+	}
+
+	//Anadimos todos los TAG_SEQUENCE_FLOW en el diagrama al atributo this.flows
+	for _, seq := range parent_sequences {
+		this.flows = append(this.flows, seq.SelectElements(TAG_SEQUENCE_FLOW)...)
+	}
 }
 
 /* Verifica si un elemento es una estructura gateway */
@@ -165,16 +166,12 @@ func (this DiagramBpmnIO) getRootElement() (*etree.Element) {
 }
 
 /*
-	Esta funcion es la encargada de obtener el elemento process donde estan ubicados todas
+	Esta funcion es la encargada de obtener los elementos process donde estan ubicados todas
 	las actividades del diagrama, es hija del elemento TAG_ROOT > TAG_PROCESS
 
-	Retorna un puntero Element
+	Retorna un slice puntero Element
  */
-func (this DiagramBpmnIO) getProcessElement() (*etree.Element) {
-	return this.getRootElement().SelectElement(TAG_PROCESS)
-}
-
-func (this DiagramBpmnIO) getProcess() ([]*etree.Element) {
+func (this DiagramBpmnIO) getProcessElements() ([]*etree.Element) {
 	return this.getRootElement().SelectElements(TAG_PROCESS)
 }
 
@@ -185,7 +182,7 @@ func (this DiagramBpmnIO) getProcess() ([]*etree.Element) {
 	Retorna un puntero Element
  */
 func (this DiagramBpmnIO) getElementByID(id string) (*etree.Element) {
-	return this.getProcessElement().FindElement(`//[@id='` + id + `']`)
+	return this.getRootElement().FindElement(`//[@id='` + id + `']`)
 }
 
 /*
@@ -267,13 +264,24 @@ func (this DiagramBpmnIO) GetSuccessionProcess() []*etree.Element {
 }
 
 /*
-	Esta funcion obtiene todoo carriles del diagrama
+	Esta funcion obtiene todos los carriles del diagrama
 
 	Retorna slice de puntero element
  */
 func (this DiagramBpmnIO) GetLanes() []*etree.Element {
-	//return this.getProcessElement()
-	return nil
+	lanes := make([]*etree.Element, 0)
+
+	for _, e_process := range this.getProcessElements() {
+		lane_set := e_process.SelectElement(TAG_LANE_SET)
+
+		if lane_set != nil {
+			for _, lane := range lane_set.SelectElements(TAG_LANE) {
+				lanes = append(lanes, lane)
+			}
+		}
+	}
+
+	return lanes
 }
 
 /*
@@ -282,12 +290,19 @@ func (this DiagramBpmnIO) GetLanes() []*etree.Element {
 	Retorna un puntero element
  */
 func (this DiagramBpmnIO) getBeginElement() (*etree.Element) {
-	s_event := this.getProcessElement().SelectElement(TAG_START_EVENT)
-	for _, v := range this.sequences {
-		if v.SelectAttr(ATTR_SOURCE_REF).Value == s_event.SelectAttr(ATTR_ID).Value {
-			return v
+
+	for _, process := range this.getProcessElements() {
+		start_event := process.SelectElement(TAG_START_EVENT)
+
+		if start_event != nil {
+			for _, flow := range this.flows {
+				if flow.SelectAttr(ATTR_SOURCE_REF).Value == start_event.SelectAttr(ATTR_ID).Value {
+					return flow
+				}
+			}
 		}
 	}
+
 	return nil
 }
 
@@ -297,7 +312,7 @@ func (this DiagramBpmnIO) getBeginElement() (*etree.Element) {
 	Retorna un puntero element o nil
  */
 func (this DiagramBpmnIO) getNextElement(previus *etree.Element) (*etree.Element) {
-	for _, seq := range this.sequences {
+	for _, seq := range this.flows {
 		if seq.SelectAttr(ATTR_SOURCE_REF).Value == previus.SelectAttr(ATTR_TARGET_REF).Value {
 			return seq
 		}
@@ -315,10 +330,10 @@ func (this DiagramBpmnIO) hasMoreElements(previus *etree.Element) bool {
 }
 
 /*
-	Esta funcion obtiene la sequencia del proceso
+	Esta funcion obtiene los flows del proceso
 
 	Retorna Retorna slice de puntero element
  */
-func (this DiagramBpmnIO) GetSequences() ([]*etree.Element) {
-	return this.sequences
+func (this DiagramBpmnIO) GetFlows() ([]*etree.Element) {
+	return this.flows
 }
