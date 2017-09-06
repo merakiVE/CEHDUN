@@ -3,7 +3,6 @@ package parser
 import (
 	"strings"
 	"github.com/beevik/etree"
-	"fmt"
 )
 
 /*
@@ -110,11 +109,13 @@ func (this *DiagramBpmnIO) loadSequence() {
 
 /* Funcion que carga todos los flows en un slice de la estructura */
 func (this *DiagramBpmnIO) loadFlows() {
+	//s := make([]*etree.Element,0)
 
-	fmt.Println(this.getRootElement().SelectElements(TAG_MESSAGE_FLOW))
-
-	copy(this.flows, this.getRootElement().SelectElements(TAG_SEQUENCE_FLOW))
-	copy(this.flows, this.getRootElement().SelectElements(TAG_MESSAGE_FLOW))
+	//for _, eprocess := range this.getProcess() {
+	//s = append(s, eprocess.FindElements(`[`+TAG_SEQUENCE_FLOW+`]`)...)
+	//}
+	this.flows = append(this.flows, this.getRootElement().FindElements(`[`+TAG_SEQUENCE_FLOW+`]`)...)
+	this.flows = append(this.flows, this.getRootElement().FindElements(`[`+TAG_MESSAGE_FLOW+`]`)...)
 }
 
 /* Verifica si un elemento es una estructura gateway */
@@ -171,6 +172,10 @@ func (this DiagramBpmnIO) getRootElement() (*etree.Element) {
  */
 func (this DiagramBpmnIO) getProcessElement() (*etree.Element) {
 	return this.getRootElement().SelectElement(TAG_PROCESS)
+}
+
+func (this DiagramBpmnIO) getProcess() ([]*etree.Element) {
+	return this.getRootElement().SelectElements(TAG_PROCESS)
 }
 
 /*
