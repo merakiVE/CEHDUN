@@ -249,7 +249,7 @@ func (this DiagramBpmnIO) GetElementsInLane(lane_elem *etree.Element) ([]*etree.
 
 	Retorna un string con el nombre
  */
-func (this DiagramBpmnIO) GetAttribute(elem *etree.Element, key string) (string) {
+func (this DiagramBpmnIO) GetAttributeElement(elem *etree.Element, key string) (string) {
 	return elem.SelectAttrValue(key, EMPTY)
 }
 
