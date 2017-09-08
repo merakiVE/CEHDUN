@@ -66,7 +66,7 @@ const (
 
 /* Funcion que crea la estructura de datos para el diagrama bpmn */
 
-func NewDiagram() DiagramBpmnIO {
+func NewParserBPMNIO() DiagramBpmnIO {
 	doc := etree.NewDocument()
 	return DiagramBpmnIO{documentXML: doc, flows: make([]*etree.Element, 0)}
 }
