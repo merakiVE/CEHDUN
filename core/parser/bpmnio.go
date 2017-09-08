@@ -360,24 +360,24 @@ func (this DiagramBpmnIO) GetFlows() ([]*etree.Element) {
 }
 
 // /functions for interface Diagram
-func (this *DiagramBpmnIO) GetGateways() ([]Gateway) {
+func (this DiagramBpmnIO) GetGateways() ([]Gateway) {
 	s_gateways := make([]Gateway, 0)
 	return  s_gateways
 }
 
-func (this *DiagramBpmnIO) GetEvents() ([]Event) {
+func (this DiagramBpmnIO) GetEvents() ([]Event) {
 	s_events := make([]Event, 0)
 
 	return s_events
 }
 
-func (this *DiagramBpmnIO) GetActivities() ([]Activity) {
+func (this DiagramBpmnIO) GetActivities() ([]Activity) {
 	s_activities := make([]Activity, 0)
 
 	return s_activities
 }
 
-func (this *DiagramBpmnIO) GetLanes() ([]Lane) {
+func (this DiagramBpmnIO) GetLanes() ([]Lane) {
 	s_lanes := make([]Lane, 0)
 
 	for _, lane := range this.GetLanesElement() {
@@ -389,14 +389,14 @@ func (this *DiagramBpmnIO) GetLanes() ([]Lane) {
 	return s_lanes
 }
 
-func (this *DiagramBpmnIO) LoadDiagramByPath(path string) {
-	this.ReadFromString(path)
+func (this DiagramBpmnIO) LoadDiagramByPath(path string) {
+	this.ReadFromFile(path)
 }
 
-func (this *DiagramBpmnIO) LoadDiagramByBuffer(buf []byte) {
+func (this DiagramBpmnIO) LoadDiagramByBuffer(buf []byte) {
 	this.ReadFromBytes(buf)
 }
 
-func (this *DiagramBpmnIO) LoadDiagramByString(str string) {
+func (this DiagramBpmnIO) LoadDiagramByString(str string) {
 	this.ReadFromString(str)
 }
