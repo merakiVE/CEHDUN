@@ -28,7 +28,7 @@ import (
 */
 
 const (
-	EMPTY         = "unknown"
+	EMPTY = "unknown"
 
 	BPMNIO_TYPE_GATEWAY  = "gateway"
 	BPMNIO_TYPE_EVENT    = "event"
@@ -289,7 +289,7 @@ func (this DiagramBpmnIO) GetSuccessionProcess() []*etree.Element {
 
 	Retorna slice de puntero element
  */
-func (this DiagramBpmnIO) GetLanes() []*etree.Element {
+func (this DiagramBpmnIO) GetLanesElement() []*etree.Element {
 	lanes := make([]*etree.Element, 0)
 
 	for _, e_process := range this.getProcessElements() {
@@ -357,4 +357,46 @@ func (this DiagramBpmnIO) hasMoreElements(previus *etree.Element) bool {
  */
 func (this DiagramBpmnIO) GetFlows() ([]*etree.Element) {
 	return this.flows
+}
+
+// /functions for interface Diagram
+func (this *DiagramBpmnIO) GetGateways() ([]Gateway) {
+	s_gateways := make([]Gateway, 0)
+	return  s_gateways
+}
+
+func (this *DiagramBpmnIO) GetEvents() ([]Event) {
+	s_events := make([]Event, 0)
+
+	return s_events
+}
+
+func (this *DiagramBpmnIO) GetActivities() ([]Activity) {
+	s_activities := make([]Activity, 0)
+
+	return s_activities
+}
+
+func (this *DiagramBpmnIO) GetLanes() ([]Lane) {
+	s_lanes := make([]Lane, 0)
+
+	for _, lane := range this.GetLanesElement() {
+		s_lanes = append(s_lanes, Lane{
+			Name: lane.SelectAttrValue(BPMNIO_ATTR_NAME, EMPTY),
+		})
+	}
+
+	return s_lanes
+}
+
+func (this *DiagramBpmnIO) LoadDiagramByPath(path string) {
+	this.ReadFromString(path)
+}
+
+func (this *DiagramBpmnIO) LoadDiagramByBuffer(buf []byte) {
+	this.ReadFromBytes(buf)
+}
+
+func (this *DiagramBpmnIO) LoadDiagramByString(str string) {
+	this.ReadFromString(str)
 }
