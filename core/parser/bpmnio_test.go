@@ -66,7 +66,7 @@ const TEMPLATE_XML = `
 
 func TestBpmnIO(t *testing.T) {
 
-	d := NewDiagram()
+	d := NewParserBPMNIO()
 
 	d.ReadFromString(TEMPLATE_XML)
 
@@ -74,4 +74,5 @@ func TestBpmnIO(t *testing.T) {
 
 		fmt.Println(n.Tag, d.GetTypeElement(n), d.HasDataInput(n), d.GetDataInputElement(n))
 	}
+
 }
