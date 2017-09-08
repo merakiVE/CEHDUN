@@ -67,9 +67,9 @@ const (
 
 /* Funcion que crea la estructura de datos para el diagrama bpmn */
 
-func NewParserBPMNIO() DiagramBpmnIO {
+func NewParserBPMNIO() *DiagramBpmnIO {
 	doc := etree.NewDocument()
-	return DiagramBpmnIO{documentXML: doc, flows: make([]*etree.Element, 0)}
+	return &DiagramBpmnIO{documentXML: doc, flows: make([]*etree.Element, 0)}
 }
 
 /*
@@ -422,7 +422,6 @@ func (this DiagramBpmnIO) GetActivities() ([]Activity) {
 			Type: this.GetTypeElement(act),
 		})
 	}
-
 	return s_activities
 }
 
@@ -438,14 +437,14 @@ func (this DiagramBpmnIO) GetLanes() ([]Lane) {
 	return s_lanes
 }
 
-func (this DiagramBpmnIO) LoadDiagramByPath(path string) {
+func (this *DiagramBpmnIO) LoadDiagramByPath(path string) {
 	this.ReadFromFile(path)
 }
 
-func (this DiagramBpmnIO) LoadDiagramByBuffer(buf []byte) {
+func (this *DiagramBpmnIO) LoadDiagramByBuffer(buf []byte) {
 	this.ReadFromBytes(buf)
 }
 
-func (this DiagramBpmnIO) LoadDiagramByString(str string) {
+func (this *DiagramBpmnIO) LoadDiagramByString(str string) {
 	this.ReadFromString(str)
 }
