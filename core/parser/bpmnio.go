@@ -3,6 +3,7 @@ package parser
 import (
 	"strings"
 	"github.com/beevik/etree"
+	"github.com/merakiVE/CEHDUN/core/utils"
 )
 
 /*
@@ -332,9 +333,9 @@ func (this DiagramBpmnIO) getBeginElement() (*etree.Element) {
 
 	Retorna un puntero element o nil
  */
-func (this DiagramBpmnIO) getNextElement(previus *etree.Element) (*etree.Element) {
+func (this DiagramBpmnIO) getNextElement(flow_previus *etree.Element) (*etree.Element) {
 	for _, seq := range this.flows {
-		if seq.SelectAttr(BPMNIO_ATTR_SOURCE_REF).Value == previus.SelectAttr(BPMNIO_ATTR_TARGET_REF).Value {
+		if seq.SelectAttr(BPMNIO_ATTR_SOURCE_REF).Value == flow_previus.SelectAttr(BPMNIO_ATTR_TARGET_REF).Value {
 			return seq
 		}
 	}
@@ -346,8 +347,8 @@ func (this DiagramBpmnIO) getNextElement(previus *etree.Element) (*etree.Element
 
 	Retorna booleano
  */
-func (this DiagramBpmnIO) hasMoreElements(previus *etree.Element) bool {
-	return this.getNextElement(previus) != nil
+func (this DiagramBpmnIO) hasMoreElements(flow_previus *etree.Element) bool {
+	return this.getNextElement(flow_previus) != nil
 }
 
 /*
@@ -359,20 +360,68 @@ func (this DiagramBpmnIO) GetFlows() ([]*etree.Element) {
 	return this.flows
 }
 
-// /functions for interface Diagram
+/*
+	Esta funcion obtiene todos los ids de los elementos del diagrama..
+
+	Retorna Retorna slice de strings
+ */
+func (this DiagramBpmnIO) getIDsElements() ([]string) {
+	elements_ids := make([]string, 0)
+
+	for _, flow := range this.GetFlows() {
+		id_element_source := flow.SelectAttrValue(BPMNIO_ATTR_SOURCE_REF, EMPTY)
+		id_element_target := flow.SelectAttrValue(BPMNIO_ATTR_TARGET_REF, EMPTY)
+
+		if !utils.InSlice(id_element_source, elements_ids) {
+			elements_ids = append(elements_ids, id_element_source)
+		}
+
+		if !utils.InSlice(id_element_target, elements_ids) {
+			elements_ids = append(elements_ids, id_element_target)
+		}
+	}
+
+	return elements_ids
+}
+
+/*
+	Esta funcion obtiene todos los elementos del diagrama ya sean gateways, process, subprocess etc..
+
+	Retorna Retorna slice de puntero element
+ */
+func (this DiagramBpmnIO) GetElements() ([]*etree.Element) {
+	elements := make([]*etree.Element, 0)
+
+	for _, id := range this.getIDsElements() {
+		elements = append(elements, this.getElementByID(id))
+	}
+
+	return elements
+}
+
+/***********************************************/
+//   functions for interface Diagram
+/***********************************************/
+
 func (this DiagramBpmnIO) GetGateways() ([]Gateway) {
 	s_gateways := make([]Gateway, 0)
-	return  s_gateways
+	return s_gateways
 }
 
 func (this DiagramBpmnIO) GetEvents() ([]Event) {
 	s_events := make([]Event, 0)
-
 	return s_events
 }
 
 func (this DiagramBpmnIO) GetActivities() ([]Activity) {
 	s_activities := make([]Activity, 0)
+
+	for _, act := range this.GetElements() {
+		s_activities = append(s_activities, Activity{
+			Name: act.SelectAttrValue(BPMNIO_ATTR_NAME, EMPTY),
+			Type: this.GetTypeElement(act),
+		})
+	}
 
 	return s_activities
 }
