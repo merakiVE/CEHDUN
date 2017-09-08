@@ -12,7 +12,7 @@ const (
 
 	Retorna una interface{}, los metodos de esta deberian coincidir con la interface Diagram
  */
-func NewProviderParser(provider string) (interface{}) {
+func NewProviderParser(provider string) (Diagram) {
 
 	switch provider {
 
