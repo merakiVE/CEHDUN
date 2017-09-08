@@ -10,12 +10,21 @@ type Event struct {
 
 type Activity struct {
 	Name string
+	Type string
+}
+
+type Lane struct {
+	Name string
 }
 
 type Diagram interface {
 	GetGateways() []Gateway
 	GetEvents() []Event
 	GetActivities() []Activity
-	//GetLanes()
+	GetLanes() []Lane
 	//GetPools()
+
+	LoadDiagramByPath(string)
+	LoadDiagramByBuffer([]byte)
+	LoadDiagramByString(string)
 }
