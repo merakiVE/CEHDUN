@@ -30,38 +30,38 @@ import (
 const (
 	EMPTY         = "unknown"
 
-	TYPE_GATEWAY  = "gateway"
-	TYPE_EVENT    = "event"
-	TYPE_TASK     = "task"
-	TYPE_ACTIVITY = "activity"
-	TYPE_NONE     = ""
+	BPMNIO_TYPE_GATEWAY  = "gateway"
+	BPMNIO_TYPE_EVENT    = "event"
+	BPMNIO_TYPE_TASK     = "task"
+	BPMNIO_TYPE_ACTIVITY = "activity"
+	BPMNIO_TYPE_NONE     = ""
 
-	TAG_ROOT                    = "bpmn:definitions"
-	TAG_COLABORATION            = "bpmn:collaboration"
-	TAG_PROCESS                 = "bpmn:process"
-	TAG_SUB_PROCESS             = "bpmn:subProcess"
-	TAG_START_EVENT             = "bpmn:startEvent"
-	TAG_END_EVENT               = "bpmn:endEvent"
-	TAG_OUTGOING                = "bpmn:outgoing"
-	TAG_INCOMING                = "bpmn:incoming"
-	TAG_SEQUENCE_FLOW           = "bpmn:sequenceFlow"
-	TAG_MESSAGE_FLOW            = "bpmn:messageFlow"
-	TAG_TASK                    = "bpmn:task"
-	TAG_LANE_SET                = "bpmn:laneSet"
-	TAG_LANE                    = "bpmn:lane"
-	TAG_FLOW_NODE_REF           = "bpmn:flowNodeRef"
-	TAG_EVENT_BASED_GATEWAY     = "bpmn:eventBasedGateway"
-	TAG_EVENT_EXCLUSIVE_GATEWAY = "bpmn:exclusiveGateway"
-	TAG_EVENT_PARALLEL_GATEWAY  = "bpmn:parallelGateway"
-	TAG_EVENT_COMPLEX_GATWAY    = "bpmn:complexGateway"
-	TAG_DATA_INPUT_ASSOCIATION  = "bpmn:dataInputAssociation"
-	TAG_DATA_OUTPUT_ASSOCIATION = "bpmn:dataOutputAssociation"
-	TAG_DATA_OBJECT_REFERENCE   = "bpmn:dataObjectReference"
+	BPMNIO_TAG_ROOT                    = "bpmn:definitions"
+	BPMNIO_TAG_COLABORATION            = "bpmn:collaboration"
+	BPMNIO_TAG_PROCESS                 = "bpmn:process"
+	BPMNIO_TAG_SUB_PROCESS             = "bpmn:subProcess"
+	BPMNIO_TAG_START_EVENT             = "bpmn:startEvent"
+	BPMNIO_TAG_END_EVENT               = "bpmn:endEvent"
+	BPMNIO_TAG_OUTGOING                = "bpmn:outgoing"
+	BPMNIO_TAG_INCOMING                = "bpmn:incoming"
+	BPMNIO_TAG_SEQUENCE_FLOW           = "bpmn:sequenceFlow"
+	BPMNIO_TAG_MESSAGE_FLOW            = "bpmn:messageFlow"
+	BPMNIO_TAG_TASK                    = "bpmn:task"
+	BPMNIO_TAG_LANE_SET                = "bpmn:laneSet"
+	BPMNIO_TAG_LANE                    = "bpmn:lane"
+	BPMNIO_TAG_FLOW_NODE_REF           = "bpmn:flowNodeRef"
+	BPMNIO_TAG_EVENT_BASED_GATEWAY     = "bpmn:eventBasedGateway"
+	BPMNIO_TAG_EVENT_EXCLUSIVE_GATEWAY = "bpmn:exclusiveGateway"
+	BPMNIO_TAG_EVENT_PARALLEL_GATEWAY  = "bpmn:parallelGateway"
+	BPMNIO_TAG_EVENT_COMPLEX_GATWAY    = "bpmn:complexGateway"
+	BPMNIO_TAG_DATA_INPUT_ASSOCIATION  = "bpmn:dataInputAssociation"
+	BPMNIO_TAG_DATA_OUTPUT_ASSOCIATION = "bpmn:dataOutputAssociation"
+	BPMNIO_TAG_DATA_OBJECT_REFERENCE   = "bpmn:dataObjectReference"
 
-	ATTR_ID         = "id"
-	ATTR_SOURCE_REF = "sourceRef"
-	ATTR_TARGET_REF = "targetRef"
-	ATTR_NAME       = "name"
+	BPMNIO_ATTR_ID         = "id"
+	BPMNIO_ATTR_SOURCE_REF = "sourceRef"
+	BPMNIO_ATTR_TARGET_REF = "targetRef"
+	BPMNIO_ATTR_NAME       = "name"
 )
 
 /* Funcion que crea la estructura de datos para el diagrama bpmn */
@@ -107,17 +107,17 @@ func (this *DiagramBpmnIO) ReadFromBytes(bytes []byte) {
 /* Funcion que carga todos los flows en un slice de la estructura */
 func (this *DiagramBpmnIO) findAndLoadFlows() {
 	//Buscar todos los elementos padres que tengan una etiqueta TAG_MESSAGE_FLOW y TAG_SEQUENCE_FLOW como hijos
-	parent_messages := this.getRootElement().FindElements(`[` + TAG_MESSAGE_FLOW + `]`)
-	parent_sequences := this.getRootElement().FindElements(`[` + TAG_SEQUENCE_FLOW + `]`)
+	parent_messages := this.getRootElement().FindElements(`[` + BPMNIO_TAG_MESSAGE_FLOW + `]`)
+	parent_sequences := this.getRootElement().FindElements(`[` + BPMNIO_TAG_SEQUENCE_FLOW + `]`)
 
 	//Anadimos todos los TAG_SEQUENCE_FLOW en el diagrama al atributo this.flows
 	for _, mesg := range parent_messages {
-		this.flows = append(this.flows, mesg.SelectElements(TAG_MESSAGE_FLOW)...)
+		this.flows = append(this.flows, mesg.SelectElements(BPMNIO_TAG_MESSAGE_FLOW)...)
 	}
 
 	//Anadimos todos los TAG_SEQUENCE_FLOW en el diagrama al atributo this.flows
 	for _, seq := range parent_sequences {
-		this.flows = append(this.flows, seq.SelectElements(TAG_SEQUENCE_FLOW)...)
+		this.flows = append(this.flows, seq.SelectElements(BPMNIO_TAG_SEQUENCE_FLOW)...)
 	}
 }
 
@@ -145,16 +145,16 @@ func (this DiagramBpmnIO) isActivity(elem *etree.Element) (bool) {
 /* Obtiene el tipo de elemento */
 func (this DiagramBpmnIO) GetTypeElement(elem *etree.Element) (string) {
 	if this.isGateway(elem) {
-		return TYPE_GATEWAY
+		return BPMNIO_TYPE_GATEWAY
 	}
 	if this.isEvent(elem) {
-		return TYPE_EVENT
+		return BPMNIO_TYPE_EVENT
 	}
 	if this.isActivity(elem) {
-		return TYPE_ACTIVITY
+		return BPMNIO_TYPE_ACTIVITY
 	}
 
-	return TYPE_NONE
+	return BPMNIO_TYPE_NONE
 }
 
 /*
@@ -164,7 +164,7 @@ func (this DiagramBpmnIO) GetTypeElement(elem *etree.Element) (string) {
 	Retorna un puntero Element
  */
 func (this DiagramBpmnIO) getRootElement() (*etree.Element) {
-	return this.documentXML.SelectElement(TAG_ROOT)
+	return this.documentXML.SelectElement(BPMNIO_TAG_ROOT)
 }
 
 /*
@@ -174,7 +174,7 @@ func (this DiagramBpmnIO) getRootElement() (*etree.Element) {
 	Retorna un slice puntero Element
  */
 func (this DiagramBpmnIO) getProcessElements() ([]*etree.Element) {
-	return this.getRootElement().SelectElements(TAG_PROCESS)
+	return this.getRootElement().SelectElements(BPMNIO_TAG_PROCESS)
 }
 
 /*
@@ -203,7 +203,7 @@ func (this DiagramBpmnIO) getElementByAttr(atrib string, val string) (*etree.Ele
 	Retorna booleano
  */
 func (this DiagramBpmnIO) HasDataInput(elem *etree.Element) (bool) {
-	return len(elem.SelectElements(TAG_DATA_INPUT_ASSOCIATION)) > 0
+	return len(elem.SelectElements(BPMNIO_TAG_DATA_INPUT_ASSOCIATION)) > 0
 }
 
 /*
@@ -212,11 +212,11 @@ func (this DiagramBpmnIO) HasDataInput(elem *etree.Element) (bool) {
 	Retorna slice de puntero element
  */
 func (this DiagramBpmnIO) GetDataInputElement(elem *etree.Element) ([]*etree.Element) {
-	data := elem.SelectElements(TAG_DATA_INPUT_ASSOCIATION)
+	data := elem.SelectElements(BPMNIO_TAG_DATA_INPUT_ASSOCIATION)
 	slice_data := make([]*etree.Element, 0)
 
 	for _, input_asoc := range data {
-		ref := input_asoc.SelectElement(ATTR_SOURCE_REF)
+		ref := input_asoc.SelectElement(BPMNIO_ATTR_SOURCE_REF)
 		if ref != nil {
 			id_object_ref := ref.Text()
 			slice_data = append(slice_data, this.getElementByID(id_object_ref))
@@ -232,7 +232,7 @@ func (this DiagramBpmnIO) GetDataInputElement(elem *etree.Element) ([]*etree.Ele
  */
 func (this DiagramBpmnIO) GetElementsInLane(lane_elem *etree.Element) ([]*etree.Element) {
 	elems_lane := make([]*etree.Element, 0)
-	nodes_ref := lane_elem.SelectElements(TAG_FLOW_NODE_REF)
+	nodes_ref := lane_elem.SelectElements(BPMNIO_TAG_FLOW_NODE_REF)
 
 	for _, node := range nodes_ref {
 		elem := this.getElementByID(node.Text())
@@ -265,18 +265,18 @@ func (this DiagramBpmnIO) GetSuccessionProcess() []*etree.Element {
 
 	sq_elem = this.getBeginElement()
 
-	elem_add = this.getElementByID(sq_elem.SelectAttrValue(ATTR_SOURCE_REF, ""))
+	elem_add = this.getElementByID(sq_elem.SelectAttrValue(BPMNIO_ATTR_SOURCE_REF, ""))
 	s = append(s, elem_add)
 
 	for {
 		if this.hasMoreElements(sq_elem) {
 			sq_elem = this.getNextElement(sq_elem)
 
-			elem_add = this.getElementByID(sq_elem.SelectAttrValue(ATTR_SOURCE_REF, ""))
+			elem_add = this.getElementByID(sq_elem.SelectAttrValue(BPMNIO_ATTR_SOURCE_REF, ""))
 			s = append(s, elem_add)
 
 		} else {
-			elem_add = this.getElementByID(sq_elem.SelectAttrValue(ATTR_TARGET_REF, ""))
+			elem_add = this.getElementByID(sq_elem.SelectAttrValue(BPMNIO_ATTR_TARGET_REF, ""))
 			s = append(s, elem_add)
 			break
 		}
@@ -293,10 +293,10 @@ func (this DiagramBpmnIO) GetLanes() []*etree.Element {
 	lanes := make([]*etree.Element, 0)
 
 	for _, e_process := range this.getProcessElements() {
-		lane_set := e_process.SelectElement(TAG_LANE_SET)
+		lane_set := e_process.SelectElement(BPMNIO_TAG_LANE_SET)
 
 		if lane_set != nil {
-			for _, lane := range lane_set.SelectElements(TAG_LANE) {
+			for _, lane := range lane_set.SelectElements(BPMNIO_TAG_LANE) {
 				lanes = append(lanes, lane)
 			}
 		}
@@ -313,11 +313,11 @@ func (this DiagramBpmnIO) GetLanes() []*etree.Element {
 func (this DiagramBpmnIO) getBeginElement() (*etree.Element) {
 
 	for _, process := range this.getProcessElements() {
-		start_event := process.SelectElement(TAG_START_EVENT)
+		start_event := process.SelectElement(BPMNIO_TAG_START_EVENT)
 
 		if start_event != nil {
 			for _, flow := range this.flows {
-				if flow.SelectAttr(ATTR_SOURCE_REF).Value == start_event.SelectAttr(ATTR_ID).Value {
+				if flow.SelectAttr(BPMNIO_ATTR_SOURCE_REF).Value == start_event.SelectAttr(BPMNIO_ATTR_ID).Value {
 					return flow
 				}
 			}
@@ -334,7 +334,7 @@ func (this DiagramBpmnIO) getBeginElement() (*etree.Element) {
  */
 func (this DiagramBpmnIO) getNextElement(previus *etree.Element) (*etree.Element) {
 	for _, seq := range this.flows {
-		if seq.SelectAttr(ATTR_SOURCE_REF).Value == previus.SelectAttr(ATTR_TARGET_REF).Value {
+		if seq.SelectAttr(BPMNIO_ATTR_SOURCE_REF).Value == previus.SelectAttr(BPMNIO_ATTR_TARGET_REF).Value {
 			return seq
 		}
 	}
