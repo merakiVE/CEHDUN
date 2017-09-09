@@ -3,7 +3,7 @@ package common
 import (
     "github.com/jinzhu/gorm"
     _ "github.com/jinzhu/gorm/dialects/postgres"
-    "github.com/vpino/merakiVE/CEHDUN/core/types"
+    "github.com/merakiVE/CEHDUN/core/types"
 )
 
 func Connect(db types.DataBase) *gorm.DB{
