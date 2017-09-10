@@ -84,3 +84,21 @@ type DataBase struct {
     Type string `json:"type"`
     Name string `json:"name"`
 }
+
+type Name_table struct {
+    Table_name string `json:"table_name"`
+}
+
+type Column struct {
+    Column_name string `json:"column_name"`
+    Data_type string `json:"data_type"`
+}
+
+type Table struct {
+    Table_name string `json:"table_name"`
+    Columns []Column `json:"columns"`
+}   
+
+type DataBase struct {
+    Tables []Table `json:"tables"`
+}
