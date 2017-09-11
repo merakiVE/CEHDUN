@@ -99,6 +99,10 @@ type Table struct {
     Columns []Column `json:"columns"`
 }   
 
-type DataBase struct {
+type BaseData struct {
     Tables []Table `json:"tables"`
+}
+
+type Error struct {
+    Message string
 }
