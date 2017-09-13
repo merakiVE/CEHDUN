@@ -29,7 +29,8 @@ import (
 */
 
 const (
-	EMPTY = "unknown"
+	EMPTY     = "unknown"
+	XML_SPACE = "bpmn2"
 
 	BPMNIO_TYPE_GATEWAY  = "gateway"
 	BPMNIO_TYPE_EVENT    = "event"
@@ -37,32 +38,35 @@ const (
 	BPMNIO_TYPE_ACTIVITY = "activity"
 	BPMNIO_TYPE_NONE     = ""
 
-	BPMNIO_TAG_ROOT                    = "bpmn:definitions"
-	BPMNIO_TAG_COLABORATION            = "bpmn:collaboration"
-	BPMNIO_TAG_PROCESS                 = "bpmn:process"
-	BPMNIO_TAG_SUB_PROCESS             = "bpmn:subProcess"
-	BPMNIO_TAG_START_EVENT             = "bpmn:startEvent"
-	BPMNIO_TAG_END_EVENT               = "bpmn:endEvent"
-	BPMNIO_TAG_OUTGOING                = "bpmn:outgoing"
-	BPMNIO_TAG_INCOMING                = "bpmn:incoming"
-	BPMNIO_TAG_SEQUENCE_FLOW           = "bpmn:sequenceFlow"
-	BPMNIO_TAG_MESSAGE_FLOW            = "bpmn:messageFlow"
-	BPMNIO_TAG_TASK                    = "bpmn:task"
-	BPMNIO_TAG_LANE_SET                = "bpmn:laneSet"
-	BPMNIO_TAG_LANE                    = "bpmn:lane"
-	BPMNIO_TAG_FLOW_NODE_REF           = "bpmn:flowNodeRef"
-	BPMNIO_TAG_EVENT_BASED_GATEWAY     = "bpmn:eventBasedGateway"
-	BPMNIO_TAG_EVENT_EXCLUSIVE_GATEWAY = "bpmn:exclusiveGateway"
-	BPMNIO_TAG_EVENT_PARALLEL_GATEWAY  = "bpmn:parallelGateway"
-	BPMNIO_TAG_EVENT_COMPLEX_GATWAY    = "bpmn:complexGateway"
-	BPMNIO_TAG_DATA_INPUT_ASSOCIATION  = "bpmn:dataInputAssociation"
-	BPMNIO_TAG_DATA_OUTPUT_ASSOCIATION = "bpmn:dataOutputAssociation"
-	BPMNIO_TAG_DATA_OBJECT_REFERENCE   = "bpmn:dataObjectReference"
+	BPMNIO_TAG_ROOT                    = XML_SPACE + ":definitions"
+	BPMNIO_TAG_COLABORATION            = XML_SPACE + ":collaboration"
+	BPMNIO_TAG_PROCESS                 = XML_SPACE + ":process"
+	BPMNIO_TAG_SUB_PROCESS             = XML_SPACE + ":subProcess"
+	BPMNIO_TAG_START_EVENT             = XML_SPACE + ":startEvent"
+	BPMNIO_TAG_END_EVENT               = XML_SPACE + ":endEvent"
+	BPMNIO_TAG_OUTGOING                = XML_SPACE + ":outgoing"
+	BPMNIO_TAG_INCOMING                = XML_SPACE + ":incoming"
+	BPMNIO_TAG_SEQUENCE_FLOW           = XML_SPACE + ":sequenceFlow"
+	BPMNIO_TAG_MESSAGE_FLOW            = XML_SPACE + ":messageFlow"
+	BPMNIO_TAG_TASK                    = XML_SPACE + ":task"
+	BPMNIO_TAG_LANE_SET                = XML_SPACE + ":laneSet"
+	BPMNIO_TAG_LANE                    = XML_SPACE + ":lane"
+	BPMNIO_TAG_FLOW_NODE_REF           = XML_SPACE + ":flowNodeRef"
+	BPMNIO_TAG_EVENT_BASED_GATEWAY     = XML_SPACE + ":eventBasedGateway"
+	BPMNIO_TAG_EVENT_EXCLUSIVE_GATEWAY = XML_SPACE + ":exclusiveGateway"
+	BPMNIO_TAG_EVENT_PARALLEL_GATEWAY  = XML_SPACE + ":parallelGateway"
+	BPMNIO_TAG_EVENT_COMPLEX_GATWAY    = XML_SPACE + ":complexGateway"
+	BPMNIO_TAG_DATA_INPUT_ASSOCIATION  = XML_SPACE + ":dataInputAssociation"
+	BPMNIO_TAG_DATA_OUTPUT_ASSOCIATION = XML_SPACE + ":dataOutputAssociation"
+	BPMNIO_TAG_DATA_OBJECT_REFERENCE   = XML_SPACE + ":dataObjectReference"
 
 	BPMNIO_ATTR_ID         = "id"
 	BPMNIO_ATTR_SOURCE_REF = "sourceRef"
 	BPMNIO_ATTR_TARGET_REF = "targetRef"
 	BPMNIO_ATTR_NAME       = "name"
+
+	BPMNIO_ATTR_CVDI_NEURON = "cvdi:neuron"
+	BPMNIO_ATTR_CVDI_ACTION = "cvdi:action"
 )
 
 /* Funcion que crea la estructura de datos para el diagrama bpmn */
@@ -418,8 +422,10 @@ func (this DiagramBpmnIO) GetActivities() ([]Activity) {
 
 	for _, act := range this.GetElements() {
 		s_activities = append(s_activities, Activity{
-			Name: act.SelectAttrValue(BPMNIO_ATTR_NAME, EMPTY),
-			Type: this.GetTypeElement(act),
+			Name:     act.SelectAttrValue(BPMNIO_ATTR_NAME, EMPTY),
+			Type:     this.GetTypeElement(act),
+			NeuronID: this.GetAttributeElement(act, BPMNIO_ATTR_CVDI_NEURON),
+			ActionID: this.GetAttributeElement(act, BPMNIO_ATTR_CVDI_ACTION),
 		})
 	}
 	return s_activities
