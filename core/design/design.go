@@ -13,6 +13,13 @@ var _ = API("CEHDUN", func() {
 
         Consumes("application/json")
         Produces("application/json")
+
+        Origin("*", func() {
+                Methods("GET", "POST", "PUT", "PATCH", "DELETE")
+                Headers("content-type")
+                MaxAge(600)
+                Credentials()
+        })
 })
 
 var _ = Resource("syndesi", func() {                

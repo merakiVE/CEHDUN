@@ -1,4 +1,4 @@
-//go:generate goagen bootstrap -d github.com/vpino/merakiVE/CEHDUN/core/design
+//go:generate goagen bootstrap -d github.com/merakiVE/CEHDUN/core/design
 
 package main
 
