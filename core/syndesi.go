@@ -5,7 +5,7 @@ import (
 	"github.com/merakiVE/CEHDUN/core/app"
 	"github.com/merakiVE/CEHDUN/core/types"
     "github.com/merakiVE/CEHDUN/common"
-    "fmt"
+    "encoding/json"
 )
 
 // SyndesiController implements the syndesi resource.
@@ -29,8 +29,22 @@ func (c *SyndesiController) Connect(ctx *app.ConnectSyndesiContext) error {
 		Name: ctx.Payload.Name,
     }
 	
-	result := common.GetData(db)
+	response := common.GetData(db)
 
-	return ctx.OK([]byte(fmt.Sprintf("%v", result)))
+	result, err := response.(types.BaseData)
+
+	if err {
+		
+		data, _ := json.Marshal(result)
+		return ctx.OK(data)
+
+	} else {
+		
+		result, _ := response.(types.Error)
+		data, _ := json.Marshal(result)
+
+		return ctx.OK(data)
+
+	}
 
 }
