@@ -9,8 +9,10 @@ type Event struct {
 }
 
 type Activity struct {
-	Name string
-	Type string
+	Name     string
+	Type     string
+	NeuronID string
+	ActionID string
 }
 
 type Lane struct {
