@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"os"
+	"io"
+
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
 	"github.com/merakiVE/CVDI/src/models"
 	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/types"
-
 	arangoDB "github.com/hostelix/aranGO"
 )
 
@@ -82,6 +84,41 @@ func (c *ProcedureController) GetBy(key string) {
 	})
 }
 
-func (c *ProcedureController) Post() {
-	//diagram_xml, x, _:= c.Ctx.FormFile("diagram_xml")
+func (c *ProcedureController) PostUpload() {
+
+	file, info, err := c.Ctx.FormFile("diagram_xml")
+
+	if err != nil {
+		c.Ctx.StatusCode(iris.StatusInternalServerError)
+		c.Ctx.JSON(types.ResponseAPI{
+			Message: "Error upload file",
+			Errors:  err.Error(),
+		})
+		return
+	}
+
+	defer file.Close()
+
+	fname := info.Filename
+
+	out, err := os.OpenFile("/tmp/"+fname, os.O_WRONLY|os.O_CREATE, 0666)
+
+	if err != nil {
+		c.Ctx.StatusCode(iris.StatusInternalServerError)
+		c.Ctx.JSON(types.ResponseAPI{
+			Message: "Error upload file",
+			Errors:  err.Error(),
+		})
+		return
+	}
+
+	defer out.Close()
+
+	io.Copy(out, file)
+
+	c.Ctx.StatusCode(iris.StatusOK)
+	c.Ctx.JSON(types.ResponseAPI{
+		Message: "File uploaded success",
+		Data:    fname,
+	})
 }
