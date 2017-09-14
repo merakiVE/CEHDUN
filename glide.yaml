@@ -1,0 +1,4 @@
+package: github.com/merakiVE/CEHDUN
+import:
+- package: github.com/goadesign/goa
+- package: github.com/jinzhu/gorm

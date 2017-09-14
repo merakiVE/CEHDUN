@@ -1,11 +1,11 @@
-//go:generate goagen bootstrap -d github.com/vpino/merakiVE/CEHDUN/core/design
+//go:generate goagen bootstrap -d github.com/merakiVE/CEHDUN/core/design
 
 package main
 
 import (
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
-	"github.com/vpino/merakiVE/CEHDUN/core/app"
+	"github.com/merakiVE/CEHDUN/core/app"
 )
 
 func main() {

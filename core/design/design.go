@@ -13,17 +13,23 @@ var _ = API("CEHDUN", func() {
 
         Consumes("application/json")
         Produces("application/json")
+
+        Origin("*", func() {
+                Methods("GET", "POST", "PUT", "PATCH", "DELETE")
+                Headers("content-type")
+                MaxAge(600)
+                Credentials()
+        })
 })
 
 var _ = Resource("syndesi", func() {                
         BasePath("/syndesi")                       
-        DefaultMedia(SyndesiMedia)
 
         Action("connect", func() {                    
                 Routing(POST("/connect"))
 				Payload(Syndesi)
 				Description("Manage data to connect a database")
-				Response(OK, SyndesiMedia)      
+				Response(OK, "application/json")      
         })
 
 })
@@ -36,15 +42,4 @@ var Syndesi = Type("Syndesi", func() {
 	Attribute("name", String, "name database")
 
 	Required("host", "user", "password", "type", "name")
-})
-
-var SyndesiMedia = MediaType("application/json", func() {
-	TypeName("SyndesiMedia")
-	Attributes(func() {
-		Attribute("message", String, "TSucces or Error")
-		Required("message")
-	})
-	View("default", func() {
-		Attribute("message")
-	})
 })

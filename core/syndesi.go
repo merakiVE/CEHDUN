@@ -2,9 +2,10 @@ package main
 
 import (
 	"github.com/goadesign/goa"
-	"github.com/vpino/merakiVE/CEHDUN/core/app"
-	"github.com/vpino/merakiVE/CEHDUN/core/types"
-    "github.com/vpino/merakiVE/CEHDUN/common"
+	"github.com/merakiVE/CEHDUN/core/app"
+	"github.com/merakiVE/CEHDUN/core/types"
+    "github.com/merakiVE/CEHDUN/common"
+    "encoding/json"
 )
 
 // SyndesiController implements the syndesi resource.
@@ -28,17 +29,22 @@ func (c *SyndesiController) Connect(ctx *app.ConnectSyndesiContext) error {
 		Name: ctx.Payload.Name,
     }
 	
-	var message string
+	response := common.GetData(db)
 
-	con := common.Connect(db)
+	result, err := response.(types.BaseData)
 
-    if con == nil {
-        message = "Error mi pana :)"
-    }
+	if err {
+		
+		data, _ := json.Marshal(result)
+		return ctx.OK(data)
 
-	message = "Success :)"
-	
-	res := &app.SyndesiMedia{Message: message}
-	return ctx.OK(res)
+	} else {
+		
+		result, _ := response.(types.Error)
+		data, _ := json.Marshal(result)
+
+		return ctx.OK(data)
+
+	}
 
 }
