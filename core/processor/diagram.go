@@ -13,15 +13,17 @@ func VerifyDiagram() {}
 func SaveDiagram() ([]map[string]string) {
 
 	diagram := parser.NewProviderParser(parser.PROVIDER_BPMNIO_DIAGRAM)
-	diagram.LoadDiagramByPath("/home/hostelix/pruebas_go/diagram.bpmn")
+	diagram.LoadDiagramByPath("diagram.bpmn")
 
 	m := models.ProcedureModel{}
 
 	for index, activity := range diagram.GetActivities() {
 		m.Activities = append(m.Activities, models.Activity{
-			Name:     activity.Name,
-			Type:     activity.Type,
-			Sequence: index + 1,
+			Name:      activity.Name,
+			Type:      activity.Type,
+			Sequence:  index + 1,
+			NeuronKey: activity.NeuronID,
+			ActionID:  activity.ActionID,
 		})
 	}
 
