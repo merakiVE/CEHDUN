@@ -78,11 +78,12 @@ type Template struct {
 }
 
 type DataBase struct {
-    Host string `json:"host"`
-    User string `json:"user"`
+    Host     string `json:"host"`
+    User     string `json:"user"`
     Password string `json:"password"`
-    Type string `json:"type"`
-    Name string `json:"name"`
+    Type     string `json:"type"`
+    Name     string `json:"name"`
+    Port     int    `json:"port"`
 }
 
 type Name_table struct {
