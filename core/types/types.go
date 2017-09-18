@@ -13,6 +13,12 @@ type Timestamps struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+type ResponseAPI struct {
+    Message string      `json:"message"`
+    Data    interface{} `json:"data"`
+    Errors  interface{} `json:"errors"`
+}
+
 type Api struct {
     Mainname string `json:"mainname"`
     Title string `json:"title"` 
@@ -86,22 +92,28 @@ type DataBase struct {
     Port     int    `json:"port"`
 }
 
-type Name_table struct {
-    Table_name string `json:"table_name"`
+
+type ResultSQLJson struct {
+    ResultJson string 
 }
 
-type Column struct {
-    Column_name string `json:"column_name"`
-    Data_type string `json:"data_type"`
+func (this *ResultSQLJson) GetResultInBytes()([]byte){
+    return []byte(this.ResultJson)
+}
+
+
+type DatabaseSchema struct {
+    Tables []Table `json:"tables"`
 }
 
 type Table struct {
-    Table_name string `json:"table_name"`
+    Name string `json:"name"`
     Columns []Column `json:"columns"`
-}   
+}
 
-type BaseData struct {
-    Tables []Table `json:"tables"`
+type Column struct {
+    Name string `json:"name"`
+    DataType string `json:"data_type"`
 }
 
 type Error struct {
