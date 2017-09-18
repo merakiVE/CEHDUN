@@ -28,18 +28,14 @@ func ConnectDB(ctx context.Context) {
 		return
 	}
 	
-	response := common.GetData(dataDB)
+	response, err := common.GetTables(dataDB)
 
-	result, errr := response.(types.BaseData)
-
-	fmt.Println(response)
-
-	if !errr {
+	if err != nil {
 		ctx.StatusCode(iris.StatusInternalServerError)
 		ctx.JSON(types.ResponseAPI{
 			Message: "Invalid data",
 			Data:    nil,
-			Errors:  nil,
+			Errors:  []string{err.Error()},
 		})
 		return
 	} 
@@ -47,7 +43,7 @@ func ConnectDB(ctx context.Context) {
 	ctx.StatusCode(iris.StatusOK)
 	ctx.JSON(types.ResponseAPI{
 		Message: "Connection success",
-		Data:    result,
+		Data:    response,
 		Errors:  nil,
 	})
 }
