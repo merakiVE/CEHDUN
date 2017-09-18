@@ -4,7 +4,27 @@ import (
     "github.com/jinzhu/gorm"
     _ "github.com/jinzhu/gorm/dialects/postgres"
     "github.com/merakiVE/CEHDUN/core/types"
+    "errors"
+    "encoding/json"
 )
+
+const SQL_ALL_TABLES_POSTGRES = `
+    SELECT row_to_json(object_result) AS result_json
+    FROM (
+        SELECT array_to_json(array_agg(row_to_json(array_tables))) AS tables
+        FROM (
+            SELECT table_schema || '.' || table_name AS name,
+            (
+                SELECT array_to_json(array_agg(row_to_json(array_columns)))
+                FROM (
+                    SELECT column_name as name, data_type 
+                    FROM information_schema.columns WHERE table_name = tables.table_name
+                ) AS array_columns
+            ) AS columns 
+            FROM information_schema.tables AS tables WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
+        ) AS array_tables
+    ) AS object_result
+`
 
 func Connect(db types.DataBase) *gorm.DB{
     
@@ -19,42 +39,31 @@ func Connect(db types.DataBase) *gorm.DB{
     return con
 }
 
-func GetData(db types.DataBase) interface{}{
-    
-    var err types.Error 
-    var name_tables []types.Name_table  
-    var tables []types.Table
+func GetTables(db types.DataBase) (types.DatabaseSchema, error){
+    var schema types.DatabaseSchema
 
     con := Connect(db) 
 
     if con == nil {
-        err.Message = "Datos incorrectos y/o Error de conexion"
-        return err
+        return schema, errors.New("Datos incorrectos y/o Error de conexion")
     }
-
-    data_base := types.BaseData{Tables: nil} 
 
     switch(db.Type){
         case "postgresql":
+            //declare var where save result json tables database
+            result_json := new(types.ResultSQLJson)
 
-            con.Raw("SELECT table_name FROM information_schema.tables WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'").Scan(&name_tables)
+            con.Raw(SQL_ALL_TABLES_POSTGRES).Scan(result_json)
 
-            for i := range name_tables {
-                values := types.Table{Table_name: name_tables[i].Table_name, Columns: nil}
-                con.Raw("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = ?", name_tables[i].Table_name).Scan(&values.Columns)
-                tables = append(tables, values)
-                data_base.Tables = append(tables)
+            //Convert result json in struct DatabaseSchema
+            if err := json.Unmarshal([]byte(result_json.GetResultInBytes()), &schema); err != nil {
+                panic(err)
             }
-            
-            data_base.Tables = append(tables)
 
-            return data_base
+            return schema, nil
 
         default:
-
-            err.Message = "Datos incorrectos"
-
-            return err
+            return schema, errors.New("Datos incorrectos")
     }
     
 }
