@@ -25,12 +25,11 @@ var _ = API('{{$api.Mainname}}', func() {
     Consumes('application/json')
     Produces('application/json')
 
-    // OAuth2 requires form encoding
-    Consumes('application/x-www-form-urlencoded', func() {
-        Package('github.com/goadesign/goa/encoding/form')
-    })
-    Produces('application/x-www-form-urlencoded', func() {
-        Package('github.com/goadesign/goa/encoding/form')
+    Origin("*", func() {
+            Methods("GET", "POST", "PUT", "PATCH", "DELETE")
+            Headers("content-type")
+            MaxAge(600)
+            Credentials()
     })
 })
 
