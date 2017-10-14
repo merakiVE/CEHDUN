@@ -33,9 +33,7 @@ Comportamiento del CEHDUN:
 ![Image of CEHDUN](https://github.com/merakive/cehdun/blob/master/diagrams/cehdun.png)
 
 
-
-
-## Build the enviroment develepment
+## Build the enviroment development
 
 **Install with Package Management For Go**
 
