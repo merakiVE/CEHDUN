@@ -3,7 +3,7 @@ package processor
 import (
 	"github.com/merakiVE/CVDI/src/models"
 	"github.com/merakiVE/CEHDUN/core/parser"
-	"github.com/merakiVE/CVDI/core/db"
+	"github.com/merakiVE/koinos/db"
 )
 
 func DiagramProcessor() {}

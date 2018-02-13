@@ -5,15 +5,14 @@ import (
 	"io"
 
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/mvc"
 	"github.com/merakiVE/CVDI/src/models"
-	"github.com/merakiVE/CVDI/core/db"
+	"github.com/merakiVE/koinos/db"
 	"github.com/merakiVE/CVDI/core/types"
 	arangoDB "github.com/hostelix/aranGO"
 )
 
 type ProcedureController struct {
-	mvc.Controller
+	Ctx iris.Context
 	DB *arangoDB.Database
 }
 

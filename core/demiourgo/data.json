@@ -1,0 +1,139 @@
+{
+        "api": 
+        {
+            "mainname": "CEHDUN",
+            "title": "Standardized Set of Programs",
+            "description": "A test of shit",
+            "host": "localhost:8089"
+        },
+
+        "resources":
+        [
+            {
+                "namegroup": "routine",
+                "basepath": "/routines",
+                "mediatype": 
+                {
+                    "name": "RoutineMedia",
+                    "type": "application/json",
+                    "description": "A routine of a CEHDUN",
+                    "attributes":
+                    [
+                        {
+                            "name": "nombre",
+                            "type": "String",
+                            "description": "Unique routine ID",
+                            "required": true
+                        },
+                        {
+                            "name": "apellido",
+                            "type": "String",
+                            "description": "API href for making requests on the routine",
+                            "required": true
+                        },
+                        {
+                            "name": "cedula",
+                            "type": "String",
+                            "description": "Name of a routine",
+                            "required": true
+                        }
+
+                    ],
+                    "views":
+                    [
+                        {
+                            "name": "default",
+                            "attributes":
+                            [
+                                {
+                                    "name": "nombre",
+                                    "type": "String",
+                                    "description": "Unique routine ID",
+                                    "required": true
+                                },
+                                {
+                                    "name": "apellido",
+                                    "type": "String",
+                                    "description": "API href for making requests on the routine",
+                                    "required": true
+                                },
+                                {
+                                    "name": "cedula",
+                                    "type": "String",
+                                    "description": "Name of a routine",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    ]
+
+                },
+
+                "actions": 
+                [
+                    {
+                        "name": "show",
+                        "description": "Get routine by id",
+                        "method": "GET",
+                        "Route": "/:cedula",
+                        "params": 
+                        [
+                            {
+                                "name": "cedula",
+                                "type": "String",
+                                "description": "Routine ID"
+                            }
+                        ],
+                        "payload": {},
+                        "responses": 
+                        [
+                            {
+                                "name": "OK"
+                            }
+
+                        ]
+                    },
+
+                    {
+                        "name": "submit",
+                        "description": "Post accepts a form encoded request and returns a form encoded response",
+                        "method": "POST",
+                        "Route": "/",
+                        "params": [],
+                        "payload": 
+                        {
+                            "name": "Routine",
+                            "attributes":
+                            [
+                                {
+                                    "name": "routineID",
+                                    "type": "Integer",
+                                    "description": "Routine ID",
+                                    "required": true
+                                },
+                                {
+                                    "name": "name",
+                                    "type": "String",
+                                    "description": "Name Routine name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "activities",
+                                    "type": "Integer",
+                                    "description": "Number of activities",
+                                    "required": true
+                                }
+                            ]
+                        },
+                        "responses": 
+                        [
+                            {
+                                "name": "OK"
+                            }
+
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
