@@ -3,7 +3,7 @@ package parser
 import (
 	"strings"
 	"github.com/beevik/etree"
-	"github.com/merakiVE/CEHDUN/core/utils"
+	"github.com/merakiVE/koinos/utils"
 )
 
 /*
