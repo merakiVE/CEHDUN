@@ -86,27 +86,33 @@ type DiagramBpmnIO struct {
 }
 
 /* Funcion que carga el diagrama XML en forma de pathfile */
-func (this *DiagramBpmnIO) ReadFromFile(filename string) {
+func (this *DiagramBpmnIO) ReadFromFile(filename string) error {
+	this.documentXML = etree.NewDocument()
 	if err := this.documentXML.ReadFromFile(filename); err != nil {
-		panic(err)
+		return err
 	}
 	this.findAndLoadFlows()
+	return nil
 }
 
 /* Funcion que carga el diagrama XML en forma de string */
-func (this *DiagramBpmnIO) ReadFromString(data string) {
+func (this *DiagramBpmnIO) ReadFromString(data string) error {
+	this.documentXML = etree.NewDocument()
 	if err := this.documentXML.ReadFromString(data); err != nil {
-		panic(err)
+		return err
 	}
 	this.findAndLoadFlows()
+	return nil
 }
 
 /* Funcion que carga el diagrama XML en forma de byte */
-func (this *DiagramBpmnIO) ReadFromBytes(bytes []byte) {
+func (this *DiagramBpmnIO) ReadFromBytes(bytes []byte) error {
+	this.documentXML = etree.NewDocument()
 	if err := this.documentXML.ReadFromBytes(bytes); err != nil {
-		panic(err)
+		return err
 	}
 	this.findAndLoadFlows()
+	return nil
 }
 
 /* Funcion que carga todos los flows en un slice de la estructura */
@@ -136,10 +142,10 @@ func (this DiagramBpmnIO) isEvent(elem *etree.Element) (bool) {
 	return strings.HasSuffix(elem.Tag, "Event")
 }
 
-/* Verifica si un elemento es una actividad */
-func (this DiagramBpmnIO) isActivity(elem *etree.Element) (bool) {
-	activities := []string{"subProcess", "transaction", "task"}
-	for _, v := range activities {
+/* Verifica si un elemento es una tarea */
+func (this DiagramBpmnIO) isTask(elem *etree.Element) (bool) {
+	taks := []string{"subProcess", "transaction", "task"}
+	for _, v := range taks {
 		if v == elem.Tag {
 			return true
 		}
@@ -155,8 +161,8 @@ func (this DiagramBpmnIO) GetTypeElement(elem *etree.Element) (string) {
 	if this.isEvent(elem) {
 		return BPMNIO_TYPE_EVENT
 	}
-	if this.isActivity(elem) {
-		return BPMNIO_TYPE_ACTIVITY
+	if this.isTask(elem) {
+		return BPMNIO_TYPE_TASK
 	}
 
 	return BPMNIO_TYPE_NONE
@@ -413,44 +419,54 @@ func (this DiagramBpmnIO) GetGateways() ([]Gateway) {
 }
 
 func (this DiagramBpmnIO) GetEvents() ([]Event) {
-	s_events := make([]Event, 0)
-	return s_events
+	events := make([]Event, 0)
+	for _, elem := range this.GetElements() {
+		if this.isEvent(elem) {
+			events = append(events, Event{
+				Type: this.GetTypeElement(elem),
+			})
+		}
+	}
+	return events
 }
 
-func (this DiagramBpmnIO) GetActivities() ([]Activity) {
-	s_activities := make([]Activity, 0)
-
-	for _, act := range this.GetElements() {
-		s_activities = append(s_activities, Activity{
-			Name:     act.SelectAttrValue(BPMNIO_ATTR_NAME, EMPTY),
-			Type:     this.GetTypeElement(act),
-			NeuronID: this.GetAttributeElement(act, BPMNIO_ATTR_CVDI_NEURON),
-			ActionID: this.GetAttributeElement(act, BPMNIO_ATTR_CVDI_ACTION),
-		})
+func (this DiagramBpmnIO) GetTasks() ([]Task) {
+	tasks := make([]Task, 0)
+	for _, elem := range this.GetElements() {
+		if this.isTask(elem) {
+			tasks = append(tasks, Task{
+				Name:     elem.SelectAttrValue(BPMNIO_ATTR_NAME, EMPTY),
+				Type:     this.GetTypeElement(elem),
+				NeuronID: this.GetAttributeElement(elem, BPMNIO_ATTR_CVDI_NEURON),
+				ActionID: this.GetAttributeElement(elem, BPMNIO_ATTR_CVDI_ACTION),
+			})
+		}
 	}
-	return s_activities
+	return tasks
 }
 
 func (this DiagramBpmnIO) GetLanes() ([]Lane) {
-	s_lanes := make([]Lane, 0)
-
+	lanes := make([]Lane, 0)
 	for _, lane := range this.GetLanesElement() {
-		s_lanes = append(s_lanes, Lane{
+		lanes = append(lanes, Lane{
 			Name: lane.SelectAttrValue(BPMNIO_ATTR_NAME, EMPTY),
 		})
 	}
-
-	return s_lanes
+	return lanes
 }
 
-func (this *DiagramBpmnIO) LoadDiagramByPath(path string) {
-	this.ReadFromFile(path)
+func (this DiagramBpmnIO) GetPools() ([]Pool) {
+	return make([]Pool, 0)
 }
 
-func (this *DiagramBpmnIO) LoadDiagramByBuffer(buf []byte) {
-	this.ReadFromBytes(buf)
+func (this *DiagramBpmnIO) LoadDiagramByPath(path string) error {
+	return this.ReadFromFile(path)
 }
 
-func (this *DiagramBpmnIO) LoadDiagramByString(str string) {
-	this.ReadFromString(str)
+func (this *DiagramBpmnIO) LoadDiagramByBuffer(buf []byte) error {
+	return this.ReadFromBytes(buf)
+}
+
+func (this *DiagramBpmnIO) LoadDiagramByString(str string) error {
+	return this.ReadFromString(str)
 }
