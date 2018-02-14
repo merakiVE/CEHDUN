@@ -4,11 +4,15 @@ type Gateway struct {
 	Type string
 }
 
+type Pool struct {
+	Name string
+}
+
 type Event struct {
 	Type string
 }
 
-type Activity struct {
+type Task struct {
 	Name     string
 	Type     string
 	NeuronID string
@@ -22,11 +26,11 @@ type Lane struct {
 type Diagram interface {
 	GetGateways() []Gateway
 	GetEvents() []Event
-	GetActivities() []Activity
+	GetTasks() []Task
 	GetLanes() []Lane
-	//GetPools()
+	GetPools() []Pool
 
-	LoadDiagramByPath(string)
-	LoadDiagramByBuffer([]byte)
-	LoadDiagramByString(string)
+	LoadDiagramByPath(string) error
+	LoadDiagramByBuffer([]byte) error
+	LoadDiagramByString(string) error
 }
