@@ -42,6 +42,7 @@ func main() {
 	}))
 
 	app.Post("/connect", controllers.ConnectDB)
+	app.Post("/build", controllers.BuildAPI)
 
 	app.Run(iris.Addr(PORT_SERVER), iris.WithCharset("UTF-8"))
 }
