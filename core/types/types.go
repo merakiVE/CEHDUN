@@ -19,11 +19,19 @@ type ResponseAPI struct {
     Errors  interface{} `json:"errors"`
 }
 
+type Contact struct {
+    Name string  `json:"name"`
+    Email string `json:"email"`
+}
+
 type Api struct {
-    Mainname string `json:"mainname"`
-    Title string `json:"title"` 
+    Name string `json:"name, omitempty"`
+    Title string `json:"title, omitempty"` 
     Description string `json:"description,omitempty"`
-    Host string `json:"host"`
+    Contact Contact `json:"contact"`
+    Host string `json:"host, omitempty"`
+    Port int `json:"port"`
+    BasePath string `json:"basePath, omitempty"`
 }
 
 type Response struct {
