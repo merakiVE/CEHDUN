@@ -61,7 +61,8 @@ func BuildAPI(ctx context.Context) {
 		})
 		return
 	}
-	const TEMPLATE = `package design
+
+	const TEMPLATE_API = `package design
 
 {{$api := .}}
 
@@ -94,8 +95,50 @@ var _ = API('{{$api.Name}}', func() {
     })
 })
 `
+	const TEMPLATE_RESOURCES = ` package design
 
-    t, err := template.New("Api Design").Parse(TEMPLATE)
+{{$resources := .}}
+
+import (
+    . "github.com/goadesign/goa/design"
+    . "github.com/goadesign/goa/design/apidsl"
+    . "github.com/goadesign/oauth2/design"
+)
+
+{{range $resource := $resources}}
+
+var _ = Resource("{{$resource.Namegroup}}", func() {
+        BasePath("{{$resource.Basepath}}")
+
+        {{range $action := $resource.Actions}}
+
+        Action("{{$action.Name}}", func() {
+                Description("{{$action.Description}}")
+                Routing({{$action.Method}}("{{$action.Route}}"))
+                
+                {{if $action.Params}}
+                Params(func(){
+                    {{range $param := $action.Params}}
+                    Param("{{$param.Name}}}", {{$param.Type}}, "{{$param.Description}}")
+                    {{end}}
+                })
+                {{end}}
+
+                {{if $action.Payload.Name }}
+                Payload({{$action.Payload.Name}})
+                {{end}}
+                
+                {{range $response := $action.Responses}}
+                Response({{$response.Name}})
+                {{end}}
+        })
+        {{end}}
+
+})
+
+`
+
+    t, err := template.New("Api Design").Parse(TEMPLATE_API)
 
 	    if err != nil {
 	        panic(err)
